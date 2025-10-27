@@ -4,7 +4,7 @@ import { classes } from "~/consts"
 import { random } from "~/utils/random"
 import { useNavigate } from "react-router"
 
-export const TrainBox = ({ open, name }: any) => {
+export const TrainBox = ({ open, name, passengerData }: any) => {
   const [expanded, setExpanded] = useState(false)
   const [counter, setCounter] = useState(random(8, 3))
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
@@ -238,16 +238,18 @@ export const TrainBox = ({ open, name }: any) => {
                       farePerSeat: selectedPrice,
                       totalFare: selectedSeats.length * selectedPrice,
                       journeyDate: "25 OCT, 10:00 AM",
-                      fromStation: "Dhaka",
-                      toStation: "Sarishabari",
+                      fromStation: passengerData?.from || "Dhaka",
+                      toStation: passengerData?.to || "Sarishabari",
                       arrivalTime: "25 OCT, 03:21 PM",
                       duration: "05h 21m",
                       pnrNumber: "62F47A65B548C2",
                       issueDateTime: "11-08-2022 09:41",
-                      journeyDateTime: "13-08-2022 10:30",
-                      mobileNumber: "01568015679",
-                      passengerName: "Rezwana Tasnin",
+                      journeyDateTime:
+                        passengerData?.date || "13-08-2022 10:30",
+                      mobileNumber: passengerData?.phone || "01568015679",
+                      passengerName: passengerData?.name || "Rezwana Tasnin",
                       nidNumber: "9121319993",
+                      passengerData: passengerData, // Pass the entire form data
                     }
 
                     // Navigate to ticket page with booking data

@@ -45,6 +45,7 @@ export default function Home() {
               key={i}
               open={i === 0}
               name={`Train ${i + 1} (${random(799, 700)})`}
+              passengerData={form}
             />
           ))}
         </div>
