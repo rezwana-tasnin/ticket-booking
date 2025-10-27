@@ -1,11 +1,17 @@
-import { TicketBox } from "@/components/TicketBox.tsx"
-import { useState } from "react"
+import { TicketBox } from "@/components/TicketBox"
+import { useState, useRef } from "react"
 import { classes } from "~/consts"
 import { random } from "~/utils/random"
+import { useNavigate } from "react-router"
 
 export const TrainBox = ({ open, name }: any) => {
   const [expanded, setExpanded] = useState(false)
   const [counter, setCounter] = useState(random(8, 3))
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([])
+  const [selectedClass, setSelectedClass] = useState<string>("")
+  const [selectedPrice, setSelectedPrice] = useState<number>(0)
+  const seatSelectionRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
   return (
     <details open={open} className="bg-white rounded-lg">
       <summary>
@@ -45,13 +51,28 @@ export const TrainBox = ({ open, name }: any) => {
               available={random(10, 0)}
               onClick={() => {
                 setExpanded(true)
+                setSelectedClass(cls)
+                setSelectedPrice(random(500, 200))
+
+                // Smooth scroll to seat selection after a short delay
+                setTimeout(() => {
+                  if (seatSelectionRef.current) {
+                    seatSelectionRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    })
+                  }
+                }, 100)
               }}
             />
           ))}
         </div>
 
         {expanded && (
-          <div className="w-full bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row gap-6">
+          <div
+            ref={seatSelectionRef}
+            className="w-full bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row gap-6"
+          >
             {/* Left side - Seat layout */}
             <div className="w-full md:w-2/3">
               <h2 className="text-lg font-semibold mb-2 text-gray-800">
@@ -64,7 +85,7 @@ export const TrainBox = ({ open, name }: any) => {
                   Available
                 </span>
                 <span className="flex items-center gap-1 text-gray-600 text-sm">
-                  <span className="w-4 h-4 bg-blue-400 rounded"></span> Selected
+                  <span className="w-4 h-4 bg-sky-400 rounded"></span> Selected
                 </span>
                 <span className="flex items-center gap-1 text-gray-600 text-sm">
                   <span className="w-4 h-4 bg-sky-500 rounded"></span> Booked
@@ -129,18 +150,36 @@ export const TrainBox = ({ open, name }: any) => {
                   "KA-54",
                   "KA-55",
                   "KA-56",
-                ].map((seat, i) => (
-                  <div
-                    key={i}
-                    className={`p-2 text-sm font-medium text-center rounded cursor-pointer border ${
-                      i < 20
-                        ? "bg-sky-500 text-white"
-                        : "bg-gray-100 hover:bg-sky-400"
-                    }`}
-                  >
-                    {seat}
-                  </div>
-                ))}
+                ].map((seat, i) => {
+                  const isBooked = i < 20
+                  const isSelected = selectedSeats.includes(seat)
+
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => {
+                        if (!isBooked) {
+                          if (isSelected) {
+                            setSelectedSeats(
+                              selectedSeats.filter((s) => s !== seat),
+                            )
+                          } else {
+                            setSelectedSeats([...selectedSeats, seat])
+                          }
+                        }
+                      }}
+                      className={`p-2 text-sm font-medium text-center rounded cursor-pointer border ${
+                        isBooked
+                          ? "bg-sky-500 text-white cursor-not-allowed"
+                          : isSelected
+                            ? "bg-sky-400 text-white"
+                            : "bg-gray-100 hover:bg-sky-400"
+                      }`}
+                    >
+                      {seat}
+                    </div>
+                  )
+                })}
               </div>
 
               <p className="mt-4 text-sm text-gray-500">COACH: KA</p>
@@ -154,20 +193,30 @@ export const TrainBox = ({ open, name }: any) => {
 
               <div className="mb-4">
                 <p className="text-sm text-gray-700">
-                  Class: <span className="font-semibold">Shovan</span>
+                  Class: <span className="font-semibold">{selectedClass}</span>
                 </p>
                 <p className="text-sm text-gray-700">
-                  Seats: <span className="font-semibold">0</span>
+                  Seats:{" "}
+                  <span className="font-semibold">{selectedSeats.length}</span>
                 </p>
                 <p className="text-sm text-gray-700">
-                  Fare: <span className="font-semibold">৳ 0</span>
+                  Fare per seat:{" "}
+                  <span className="font-semibold">৳ {selectedPrice}</span>
                 </p>
+                {selectedSeats.length > 0 && (
+                  <p className="text-sm text-gray-700">
+                    Selected seats:{" "}
+                    <span className="font-semibold">
+                      {selectedSeats.join(", ")}
+                    </span>
+                  </p>
+                )}
               </div>
 
               <div className="border-t border-gray-200 my-3"></div>
 
               <div className="text-right text-gray-800 font-semibold mb-4">
-                Total: ৳ 0
+                Total: ৳ {selectedSeats.length * selectedPrice}
               </div>
 
               <div className="mb-4">
@@ -179,7 +228,42 @@ export const TrainBox = ({ open, name }: any) => {
                 </select>
               </div>
 
-              <button className="w-full bg-sky-700 text-white py-2 rounded-lg font-medium hover:bg-sky-800 transition">
+              <button
+                onClick={() => {
+                  if (selectedSeats.length > 0) {
+                    const bookingInfo = {
+                      trainName: name,
+                      selectedClass,
+                      selectedSeats,
+                      farePerSeat: selectedPrice,
+                      totalFare: selectedSeats.length * selectedPrice,
+                      journeyDate: "25 OCT, 10:00 AM",
+                      fromStation: "Dhaka",
+                      toStation: "Sarishabari",
+                      arrivalTime: "25 OCT, 03:21 PM",
+                      duration: "05h 21m",
+                      pnrNumber: "62F47A65B548C2",
+                      issueDateTime: "11-08-2022 09:41",
+                      journeyDateTime: "13-08-2022 10:30",
+                      mobileNumber: "01568015679",
+                      passengerName: "Rezwana Tasnin",
+                      nidNumber: "9121319993",
+                    }
+
+                    // Navigate to ticket page with booking data
+                    const encodedData = encodeURIComponent(
+                      JSON.stringify(bookingInfo),
+                    )
+                    navigate(`/ticket?data=${encodedData}`)
+                  }
+                }}
+                disabled={selectedSeats.length === 0}
+                className={`w-full py-2 rounded-lg font-medium transition ${
+                  selectedSeats.length > 0
+                    ? "bg-sky-700 text-white hover:bg-sky-800"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
                 CONTINUE PURCHASE
               </button>
             </div>

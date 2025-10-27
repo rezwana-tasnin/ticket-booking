@@ -1,4 +1,4 @@
-export const TicketPDF = () => {
+export const TicketPDF = ({ bookingData }: { bookingData?: any }) => {
   return (
     <div className="max-w-3xl mx-auto bg-white border-2 border-sky-600 rounded-lg p-6 shadow-md">
       {/* Header */}
@@ -25,35 +25,43 @@ export const TicketPDF = () => {
           <tbody>
             <tr className="border-b">
               <td className="p-2 font-medium">Issue Date & Time</td>
-              <td className="p-2">11-08-2022 09:41</td>
+              <td className="p-2">
+                {bookingData?.issueDateTime || "11-08-2022 09:41"}
+              </td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Journey Date & Time</td>
-              <td className="p-2">13-08-2022 10:30</td>
+              <td className="p-2">
+                {bookingData?.journeyDateTime || "13-08-2022 10:30"}
+              </td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Train Name & Number</td>
-              <td className="p-2">JAMALPUR EXPRESS (799)</td>
+              <td className="p-2">
+                {bookingData?.trainName || "JAMALPUR EXPRESS (799)"}
+              </td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">From Station</td>
-              <td className="p-2">Dhaka</td>
+              <td className="p-2">{bookingData?.fromStation || "Dhaka"}</td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">To Station</td>
-              <td className="p-2">Tarakandi</td>
+              <td className="p-2">{bookingData?.toStation || "Tarakandi"}</td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Class Name</td>
-              <td className="p-2">S_CHAIR</td>
+              <td className="p-2">{bookingData?.selectedClass || "S_CHAIR"}</td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Coach Name / Seat(s)</td>
-              <td className="p-2">SCHA-45, SCHA-46</td>
+              <td className="p-2">
+                {bookingData?.selectedSeats?.join(", ") || "SCHA-45, SCHA-46"}
+              </td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">No. of Adult Passenger(s)</td>
-              <td className="p-2">2</td>
+              <td className="p-2">{bookingData?.selectedSeats?.length || 2}</td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">No. of Child Passenger(s)</td>
@@ -61,7 +69,7 @@ export const TicketPDF = () => {
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Fare</td>
-              <td className="p-2">BDT 350.00</td>
+              <td className="p-2">BDT {bookingData?.totalFare || 350}.00</td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">VAT</td>
@@ -69,7 +77,9 @@ export const TicketPDF = () => {
             </tr>
             <tr>
               <td className="p-2 font-medium">Total Fare</td>
-              <td className="p-2 font-bold text-sky-700">BDT 390.00</td>
+              <td className="p-2 font-bold text-sky-700">
+                BDT {bookingData?.totalFare || 390}.00
+              </td>
             </tr>
           </tbody>
         </table>
@@ -88,11 +98,15 @@ export const TicketPDF = () => {
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">Mobile Number</td>
-              <td className="p-2">01568015679</td>
+              <td className="p-2">
+                {bookingData?.mobileNumber || "01568015679"}
+              </td>
             </tr>
             <tr>
               <td className="p-2 font-medium">PNR Number</td>
-              <td className="p-2">62F47A65B548C2</td>
+              <td className="p-2">
+                {bookingData?.pnrNumber || "62F47A65B548C2"}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -107,17 +121,21 @@ export const TicketPDF = () => {
           <tbody>
             <tr className="border-b">
               <td className="p-2 font-medium">Passenger Name</td>
-              <td className="p-2">Rezwana Tasnin</td>
+              <td className="p-2">
+                {bookingData?.passengerName || "Rezwana Tasnin"}
+              </td>
             </tr>
             <tr className="border-b">
               <td className="p-2 font-medium">
                 National ID / Birth Certificate
               </td>
-              <td className="p-2">9121319993</td>
+              <td className="p-2">{bookingData?.nidNumber || "9121319993"}</td>
             </tr>
             <tr>
               <td className="p-2 font-medium">Mobile Number</td>
-              <td className="p-2">01568015679</td>
+              <td className="p-2">
+                {bookingData?.mobileNumber || "01568015679"}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -129,7 +147,7 @@ export const TicketPDF = () => {
           Please keep your Mobile No & PNR combination safe. Do not share it
           with anyone. Bangladesh Railway will not be responsible for misuse.
         </p>
-        <p className="mt-2 font-semibold text-center text-blue-700">
+        <p className="mt-2 font-semibold text-center text-sky-700">
           Wishing you a pleasant and safe journey.
           <br />
           Bangladesh Railway

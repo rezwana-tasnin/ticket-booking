@@ -1,7 +1,8 @@
 import type { Route } from "./+types/home"
-import { Header } from "@/components/Header.tsx"
-import { SearchForm } from "@/components/SearchForm.tsx"
-import { TrainBox } from "@/components/TrainBox.tsx"
+import { Header } from "@/components/Header"
+import { SearchForm } from "@/components/SearchForm"
+import { TrainBox } from "@/components/TrainBox"
+import { Footer } from "@/components/Footer"
 import { Fragment, useState } from "react"
 import { random } from "~/utils/random"
 
@@ -15,7 +16,7 @@ export default function Home() {
   const [searched, setSearched] = useState(false)
 
   return (
-    <div className="bg-neutral-100 min-h-screen pb-16">
+    <div className="bg-neutral-100 min-h-screen">
       <Header />
 
       <div className="flex mt-8 px-8 space-x-8">
@@ -48,6 +49,8 @@ export default function Home() {
           ))}
         </div>
       )}
+
+      <Footer />
     </div>
   )
 }

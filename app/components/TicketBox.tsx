@@ -34,7 +34,9 @@ export const TicketBox = ({ name, price, available, onClick }: any) => {
           onClick={onClick}
           className={cn(
             "p-2 mt-2 rounded-full w-full font-bold text-sm text-white",
-            available > 0 ? "bg-sky-500" : "bg-red-500",
+            available > 0
+              ? "bg-sky-500 hover:bg-sky-900 cursor-pointer"
+              : "bg-red-500 cursor-not-allowed",
           )}
         >
           BOOK NOW
